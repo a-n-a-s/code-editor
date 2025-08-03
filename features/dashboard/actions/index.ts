@@ -114,7 +114,7 @@ export const onDuplicateProject = async (id: string) => {
       },
     });
     revalidatePath("/dashboard");
-
+    console.log("Duplicate project created:", duplicateProject);
     return duplicateProject;
   } catch (error) {
     console.log(error);

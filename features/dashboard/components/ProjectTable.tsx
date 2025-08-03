@@ -133,8 +133,8 @@ export default function ProjectTable({
   }
 
   const handleDuplicateProject = async (project: Project) => {
+    console.log(onDuplicateProject)
     if (!onDuplicateProject) return
-
     setIsLoading(true)
     try {
       await onDuplicateProject(project.id)

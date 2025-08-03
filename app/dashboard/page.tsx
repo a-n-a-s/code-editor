@@ -37,7 +37,7 @@ const Page = async () => {
                 onDeleteProject={onDeleteProject}
                 //@ts-ignore
                 onUpdateProject={onUpdateProject}
-                onDuplicateProjects={onDuplicateProject}
+                onDuplicateProject={onDuplicateProject}
               />
             </p>
           )}
