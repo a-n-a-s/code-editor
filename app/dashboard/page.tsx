@@ -1,3 +1,4 @@
+
 import React from "react";
 import AddNewButton from "@/features/dashboard/components/AddNewButton";
 import AddRepoButton from "@/features/dashboard/components/AddRepoButton";
@@ -12,7 +13,7 @@ import ProjectTable from "@/features/dashboard/components/ProjectTable";
 
 const Page = async () => {
   const playgrounds: any[] = await getAllPlaygroundForUser();
-
+  console.log(playgrounds)
   return (
     <>
       <div className="flex flex-col justify-start items-center min-h-screen mx-auto max-w-7xl px-4 py-10">

@@ -1,18 +1,51 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-
+import TemplateSelectionModal from "./TemplateSelectionModal";
+import { useRouter } from "next/navigation";
+import { createPlayground } from "../actions";
+import { toast } from "sonner";
 const AddNewButton = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [selectedTemplate, setSelectedTemplate] = useState<{
+    title: string;
+    template: "REACTJS" | "NEXTJS" | "EXPRESS" | "VUE" | "ANGULAR" | "HONO";
+    description: string;
+  } | null>(null);
+
+
+
+   const router = useRouter()
+
+  const handleSubmit = async(data: {
+    title: string;
+    template: "REACT" | "NEXTJS" | "EXPRESS" | "VUE" | "HONO" | "ANGULAR";
+    description?: string;
+  }) => {
+    setSelectedTemplate(data)
+    const res = await createPlayground(data);
+    toast("Playground created successfully");
+    // Here you would typically handle the creation of a new playground
+    // with the selected template data
+    console.log("Creating new playground:", data)
+    setIsModalOpen(false)
+    router.push(`/playground/${res?.id}`)
+  }
+
+
   return (
     <>
       <div
-        
         className="group px-6 py-6 flex flex-row justify-between items-center border rounded-lg bg-muted cursor-pointer 
         transition-all duration-300 ease-in-out
         hover:bg-background hover:border-[#E93F3F] hover:scale-[1.02]
         shadow-[0_2px_10px_rgba(0,0,0,0.08)]
         hover:shadow-[0_10px_30px_rgba(233,63,63,0.15)]"
+        onClick={() => setIsModalOpen(true)}
       >
         <div className="flex flex-row justify-center items-start gap-4">
           <Button
@@ -44,11 +77,11 @@ const AddNewButton = () => {
         </div>
       </div>
 
-      {/* <TemplateSelectionModal
+      <TemplateSelectionModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleSubmit}
-      /> */}
+      />
     </>
   );
 };
