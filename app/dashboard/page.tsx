@@ -2,9 +2,16 @@ import React from "react";
 import AddNewButton from "@/features/dashboard/components/AddNewButton";
 import AddRepoButton from "@/features/dashboard/components/AddRepoButton";
 import EmptyState from "@/components/ui/emptyState";
+import {
+  getAllPlaygroundForUser,
+  onDeleteProject,
+  onDuplicateProject,
+  onUpdateProject,
+} from "@/features/dashboard/actions";
+import ProjectTable from "@/features/dashboard/components/ProjectTable";
 
-const Page = () => {
-  const playgrounds: any[] = [];
+const Page = async () => {
+  const playgrounds: any[] = await getAllPlaygroundForUser();
 
   return (
     <>
@@ -15,14 +22,23 @@ const Page = () => {
         </div>
 
         <div className="mt-10 flex flex-col justify-start items-center w-full">
-          {playgrounds && playgrounds.length !== 0 ? (
+          {playgrounds && playgrounds.length === 0 ? (
             <EmptyState
               title="No Playgrounds"
               description="Create a new playground to get started"
               image="/no-playground.svg"
             />
           ) : (
-            <p>Playgournds Table</p>
+            <p>
+              <ProjectTable
+                projects={playgrounds || []}
+                //@ts-ignore
+                onDeleteProject={onDeleteProject}
+                //@ts-ignore
+                onUpdateProject={onUpdateProject}
+                onDuplicateProjects={onDuplicateProject}
+              />
+            </p>
           )}
         </div>
       </div>
