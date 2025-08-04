@@ -12,6 +12,8 @@ export const getplaygroundById = async (id: string) => {
         id,
       },
       select: {
+        title: true,
+        description: true,
         templateFiles: {
           select: {
             content: true,
@@ -19,10 +21,8 @@ export const getplaygroundById = async (id: string) => {
         },
       },
     });
-    
-    console.log(playground  )
 
-    return playground
+    return playground;
   } catch (error) {
     console.log("Error fetching playground", error);
   }

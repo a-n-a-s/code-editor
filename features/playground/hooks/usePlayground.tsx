@@ -5,7 +5,7 @@ import { getplaygroundById, SaveUpdatedCode } from "../actions";
 
 interface PlaygroundData {
   id: string;
-  name?: string;
+  title?: string;
   [key: string]: any;
 }
 
@@ -27,7 +27,7 @@ export const usePlayground = (id: string): UserPlaygroundData => {
 
   const loadPlayground = useCallback(async () => {
     if (!id) return;
-    
+
     try {
       setIsLoading(true);
       setError(null);
@@ -46,8 +46,8 @@ export const usePlayground = (id: string): UserPlaygroundData => {
       if (!res.ok) {
         throw new Error("Failed to fetch template data");
       }
-
       const templateRes = await res.json();
+      console.log(templateRes);
       if (
         templateRes.templateJson &&
         Array.isArray(templateRes.templateJson.items)
@@ -64,6 +64,7 @@ export const usePlayground = (id: string): UserPlaygroundData => {
           }
         );
       }
+      
       toast.success("Playground Loaded Successfully");
     } catch (error) {
       console.log(error);
@@ -92,7 +93,7 @@ export const usePlayground = (id: string): UserPlaygroundData => {
   useEffect(() => {
     loadPlayground();
   }, [loadPlayground]);
-
+  console.log(playgroundData)
   return {
     playgroundData,
     templateData,

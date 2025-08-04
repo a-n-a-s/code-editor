@@ -7,7 +7,8 @@ import React from "react";
 
 const Page = () => {
   const { id } = useParams<{ id: string }>();
-  const { playground, templateData, isLoading, error } = usePlayground(id);
+  const { playgroundData, templateData, isLoading, error } = usePlayground(id);
+  console.log(playgroundData , templateData)
   return (
     <div>
       <SidebarInset>
@@ -16,7 +17,7 @@ const Page = () => {
           <Separator orientation="vertical" className="mr-2 h-4" />
           <div className="flex flex-1 items-center gap-2">
             <div className="flex flex-col flex-1">
-              {playground?.name || "Code playground"}
+              {playgroundData?.title || "Code playground"}
             </div>
           </div>
         </header>

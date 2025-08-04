@@ -25,7 +25,6 @@ export async function GET(
 ) {
   const { id } = await params;
 
-
   if (!id) {
     return new Response("Playground not found", {
       status: 400,
@@ -37,7 +36,7 @@ export async function GET(
       id,
     },
   });
-  console.log(playground)
+  console.log(playground);
 
   if (!playground) {
     return new Response("Playground not found", {
@@ -71,7 +70,7 @@ export async function GET(
     await fs.promises.unlink(outputFile);
 
     return Response.json(
-      { success: true, templateJson: result },
+      { success: true, templateJson: result, templateKey },
       {
         status: 200,
       }
