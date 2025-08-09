@@ -158,7 +158,7 @@ const TemplateFileTree = ({
           <SidebarGroupContent>
             <SidebarMenu>
               {isRooteFolder ? (
-                (data as FolderItem).items.map((child, index) => (
+                (data as FolderItem)?.items.map((child, index) => (
                   <TemplateNode
                     key={index}
                     item={child}

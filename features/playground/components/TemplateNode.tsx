@@ -158,7 +158,8 @@ const TemplateNode = ({
     return (
       <SidebarMenuItem>
         <div className="flex items-center group">
-          <SidebarMenuButton className="flex-1">
+          <SidebarMenuButton className="flex-1" isActive={isSelected} onClick={() => onFileSelect?.(file)} >
+
             <File className="h-4 w-4 mr-2 shrink-0" />
             <span>{fileName}</span>
           </SidebarMenuButton>
@@ -306,7 +307,7 @@ const TemplateNode = ({
           </div>
           <CollapsibleContent>
             <SidebarMenuSub>
-              {folder.items.map((childItem, index) => (
+              {folder?.items.map((childItem, index) => (
                 <TemplateNode
                   key={index}
                   item={childItem}

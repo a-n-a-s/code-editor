@@ -5,7 +5,9 @@ export function findFilePath(
   folder: TemplateFolder,
   pathSoFar: string[] = []
 ): string | null {
+  console.log(folder)
   for (const item of folder.items) {
+
     if ("folderName" in item) {
       const res = findFilePath(file, item, [...pathSoFar, item.folderName]);
       if (res) return res;
@@ -71,7 +73,9 @@ export async function longPoll<T>(
  */
 export const generateFileId = (file: TemplateFile, rootFolder: TemplateFolder): string => {
   // Find the file's path in the folder structure
+  console.log(rootFolder)
   const path = findFilePath(file, rootFolder)?.replace(/^\/+/, '') || '';
+
   
   // Handle empty/undefined file extension
   const extension = file.fileExtension?.trim();
