@@ -44,7 +44,7 @@ export const SaveUpdatedCode = async (
         content: JSON.stringify(data),
       },
       create: {
-        id: playgroundId,
+        playgroundId,
         content: JSON.stringify(data),
       },
     });

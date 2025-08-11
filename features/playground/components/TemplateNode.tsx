@@ -60,6 +60,7 @@ import {
   NewFolderDialog,
   RenameFileDialog,
 } from "./TemplateFileTree";
+import { file } from "zod";
 
 interface FileItem {
   filename: string;
@@ -192,7 +193,7 @@ const TemplateNode = ({
         <RenameFileDialog
           isOpen={isRenameDialogOpen}
           onClose={() => setIsRenameDialogOpen(false)}
-          onSubmit={handleRenameConfirm}
+          onRename={handleRenameConfirm}
         />
         <DeleteDialog
           isOpen={isDeleteDialogOpen}
@@ -330,19 +331,22 @@ const TemplateNode = ({
         <NewFileDialog
           isOpen={isNewFileDialogOpen}
           onClose={() => setIsNewFileDialogOpen(false)}
-          onSubmit={handleCreateFile}
+          onCreateFile={handleCreateFile}
         />
 
         <NewFolderDialog
           isOpen={isNewFolderDialogOpen}
           onClose={() => setIsNewFolderDialogOpen(false)}
-          onSubmit={handleCreateFolder}
+          onCreateFolder={handleCreateFolder}
         />
 
         <RenameFileDialog
           isOpen={isRenameDialogOpen}
           onClose={() => setIsRenameDialogOpen(false)}
           onSubmit={handleRenameSubmit}
+          currentFilename={file.filename}
+          currentFileExtension={file.fileExtension}
+
         />
 
         <DeleteDialog

@@ -67,6 +67,7 @@ import {
 import { Label } from "@/components/ui/label";
 import TemplateNode from "./TemplateNode";
 import { cn } from "@/lib/utils";
+import { TemplateFile, TemplateFolder } from "../lib/path-to-json";
 
 interface FileItem {
   fileName: string;
@@ -133,6 +134,30 @@ const TemplateFileTree = ({
     setIsNewFolderDialogOpen(true);
   };
 
+    const handleCreateFile = (filename: string, extension: string) => {
+    if (onAddFile && isRooteFolder) {
+      const newFile: TemplateFile = {
+        filename,
+        fileExtension: extension,
+        content: "",
+      }
+      onAddFile(newFile, "")
+    }
+    setIsNewFileDialogOpen(false)
+  }
+
+  const handleCreateFolder = (folderName: string) => {
+    if (onAddFolder && isRooteFolder) {
+      const newFolder: TemplateFolder = {
+        folderName,
+        items: [],
+      }
+      onAddFolder(newFolder, "")
+    }
+    setIsNewFolderDialogOpen(false)
+  }
+
+
   return (
     <Sidebar>
       <SidebarContent>
@@ -197,12 +222,12 @@ const TemplateFileTree = ({
       <NewFileDialog
         isOpen={isNewFileDialogOpen}
         onClose={() => setIsNewFileDialogOpen(false)}
-        onCreateFile={handleAddRootFile}
+        onCreateFile={handleCreateFile}
       />
       <NewFolderDialog
         isOpen={isNewFolderDialogOpen}
         onClose={() => setIsNewFolderDialogOpen(false)}
-        onCreateFolder={handleAddRootFolder}
+        onCreateFolder={handleCreateFolder}
       />
       
     </Sidebar>

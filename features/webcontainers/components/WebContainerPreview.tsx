@@ -272,7 +272,7 @@ const WebContainerPreview = (
                         <h3 className="font-semibold">Error</h3>
                     </div>
                     {/* <p className="text-sm">{error.toString() || setupError}</p> */}
-                    <p className="text-sm">{error.toString() || ""}</p>
+                    <p className="text-sm">{error?.toString() || ""}</p>
                     { }
                 </div>
             </div>
