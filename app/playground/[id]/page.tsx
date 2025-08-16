@@ -6,8 +6,10 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip, TooltipProvider } from "@/components/ui/tooltip";
-import PLaygroundEditor from "@/features/playground/components/PLaygroundEditor";
+import { useAiSuggestions } from "@/features/ai/hooks/useSuggestions";
+import {PlaygroundEditor} from "@/features/playground/components/PLaygroundEditor";
 import TemplateFileTree from "@/features/playground/components/TemplateFileTree";
+import ToggleAi from "@/features/playground/components/ToggleAi";
 import { useFileExplorer } from "@/features/playground/hooks/useFileExplorer";
 import { usePlayground } from "@/features/playground/hooks/usePlayground";
 import { findFilePath } from "@/features/playground/lib";
@@ -67,7 +69,14 @@ const Page = () => {
 
   const lastSyncedContent = useRef<Map<string, string>>(new Map());
 
-
+  const aiSuggestions = useAiSuggestions();
+  
+  // Enable AI suggestions by default
+  useEffect(() => {
+    if (!aiSuggestions.isEnabled) {
+      aiSuggestions.toggleEnabled();
+    }
+  }, [aiSuggestions]);
 
   useEffect(() => {
     setPlaygroundId(id)
@@ -359,14 +368,8 @@ const Page = () => {
                 </Tooltip>
 
 
-                <Tooltip>
-                  <TooltipTrigger asChild >
-                    <Button size={"sm"} variant={"outline"} onClick={() => { }} disabled={!hasUnsavedChanges} ><Bot className="szie-4" /> </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    Toggle AI
-                  </TooltipContent>
-                </Tooltip>
+                <ToggleAi isEnabled={aiSuggestions.isEnabled} onToggle={aiSuggestions.toggleEnabled} suggestionsLoading={aiSuggestions.suggestionsLoading} />
+
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button size={"sm"} variant={"outline"}>
@@ -433,14 +436,28 @@ const Page = () => {
 
                   </Tabs>
                 </div>
-
+                      {console.log("AI Suggestions State:", aiSuggestions)}
                 <div className="flex-1">
                   <ResizablePanelGroup direction="horizontal" className="h-full" >
                     <ResizablePanel defaultSize={isPreviewVisible ? 50 : 100} >
-                      <PLaygroundEditor activeFile={activeFile} content={activeFile?.content || ""}
+                      <PlaygroundEditor activeFile={activeFile} content={activeFile?.content || ""}
                         onContentChange={(value) =>
                           activeFileId && updateFileContent(activeFileId, value)
                         }
+                        suggestion={aiSuggestions.suggestion}
+                        suggestionLoading={aiSuggestions.isLoading}
+                        suggestionPosition={aiSuggestions.position}
+                        onAcceptSuggestion={(editor: any, monaco: any) => aiSuggestions.acceptSuggestion(editor, monaco)}
+                        onRejectSuggestion={(editor: any) => aiSuggestions.rejectSuggestion(editor)}
+                        onClearSuggestion={(editor: any) => aiSuggestions.clearSuggestion(editor)}
+                        onTriggerSuggestion={(type: any, editor: any) => aiSuggestions.fetchSuggestion(type, editor)}
+
+
+
+
+
+
+
                       />
                     </ResizablePanel>
                     {
