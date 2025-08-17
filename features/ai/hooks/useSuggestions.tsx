@@ -83,7 +83,7 @@ export const useAiSuggestions = (): UseAISuggestionsReturn => {
       }
 
       const data = await response.json();
-      console.log(data);
+      console.log(data.suggestion);
       
       if (data.suggestion) {
         const suggestionText = data.suggestion.trim();

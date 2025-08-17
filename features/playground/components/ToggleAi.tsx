@@ -59,7 +59,7 @@ const ToggleAi = ({
     loadingProgress,
     activeFeature,
 }: ToggleAIProps) => {
-    const [isChatOpen, setIsChatOpen] = useState(true);
+    const [isChatOpen, setIsChatOpen] = useState(false);
 
 
     // Dummy handler for code insertion from AI chat panel

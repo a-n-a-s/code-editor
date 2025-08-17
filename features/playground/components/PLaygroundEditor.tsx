@@ -60,13 +60,6 @@ export const PlaygroundEditor = ({
 
             const cleanSuggestion = suggestion.replace(/\r/g, "")
 
-            // Calculate the end position based on the suggestion text
-            const lines = cleanSuggestion.split('\n');
-            const endLineNumber = position.lineNumber + lines.length - 1;
-            const endColumn = lines.length > 1 
-                ? lines[lines.length - 1].length + 1
-                : position.column + cleanSuggestion.length;
-
             return Promise.resolve({
                 items: [
                     {
@@ -74,8 +67,8 @@ export const PlaygroundEditor = ({
                         range: new monaco.Range(
                             position.lineNumber,
                             position.column,
-                            endLineNumber,
-                            endColumn
+                            position.lineNumber,
+                            position.column
                         ),
                         kind: monaco.languages.CompletionItemKind.Snippet,
                         label: "AI Suggestion",
@@ -89,7 +82,9 @@ export const PlaygroundEditor = ({
             })
         },
         freeInlineCompletions: () => { },
-
+        handleItemDidShow: () => {
+            // This is called when an item is shown, we can use it to track visibility
+        }
     }), [suggestion])
 
     // Clear current suggestion
@@ -126,12 +121,12 @@ export const PlaygroundEditor = ({
                 return false;
             }
 
-            // Insert the suggestion text
+            // Insert the suggestion text - FIXED RANGE CALCULATION
             const range = new monaco.Range(
                 position.lineNumber,
                 position.column,
                 position.lineNumber,
-                position.column
+                position.column // Start and end at same position for insertion
             )
 
             editor.executeEdits("ai-suggestion", [
@@ -140,8 +135,15 @@ export const PlaygroundEditor = ({
 
             // Calculate end position after insertion
             const lines = cleanSuggestionText.split("\n")
-            const endLine = position.lineNumber + lines.length - 1
-            const endColumn = lines.length === 1 ? position.column + cleanSuggestionText.length : lines[lines.length - 1].length + 1
+            const endLine = lines.length === 1 ? position.lineNumber : position.lineNumber + lines.length - 1
+            let endColumn;
+            if (lines.length === 1) {
+                // Single line - add length to current column
+                endColumn = position.column + cleanSuggestionText.length
+            } else {
+                // Multiple lines - use length of last line plus 1
+                endColumn = lines[lines.length - 1].length + 1
+            }
 
             // Move cursor to end of inserted text
             editor.setPosition({
@@ -229,11 +231,11 @@ export const PlaygroundEditor = ({
             ...defaultEditorOptions,
             // Enable inline suggestions but with specific settings to prevent conflicts
             inlineSuggest: { enabled: true },
-            // Disable some conflicting suggest features
+            // Configure suggest features for better UX
             suggest: {
-                preview: false, // Disable preview to avoid conflicts
-                showInlineDetails: false,
-                insertMode: "replace",
+                preview: true, // Enable preview for better UX
+                showInlineDetails: true,
+                insertMode: "insert", // Changed from "replace" to "insert"
             },
             // Quick suggestions
             quickSuggestions: {
@@ -251,35 +253,23 @@ export const PlaygroundEditor = ({
             tabCommandRef.current.dispose()
         }
 
-        // Register custom Tab key handler with proper context to override Monaco's built-in handling
+        // Register custom Tab key handler to accept inline suggestions
         tabCommandRef.current = editor.addCommand(
             monaco.KeyCode.Tab,
             () => {
-                // Prevent default tab behavior during suggestion acceptance
-                if (isAcceptingSuggestionRef.current) {
-                    return
-                }
-
-                // Use default tab behavior if suggestion was just accepted
-                if (suggestionAcceptedRef.current) {
-                    editor.trigger("keyboard", "tab", null)
-                    return
-                }
-
-                // Accept current suggestion if available
+                // Check if we have a current suggestion
                 if (currentSuggestionRef.current) {
-                    const accepted = acceptCurrentSuggestion()
+                    // Use our custom accept function
+                    const accepted = acceptCurrentSuggestion();
                     if (accepted) {
-                        // Prevent default tab behavior after accepting suggestion
-                        return
+                        return;
                     }
                 }
-
                 // Default tab behavior (indentation)
-                editor.trigger("keyboard", "tab", null)
+                editor.trigger("keyboard", "tab", null);
             },
-            // Context string to properly override Monaco's built-in Tab handling
-            "editorTextFocus && !editorReadonly && !suggestWidgetVisible"
+            // Context to override Monaco's built-in Tab handling
+            "editorTextFocus && !editorReadonly"
         )
 
 
@@ -538,9 +528,9 @@ export const PlaygroundEditor = ({
                     ...defaultEditorOptions,
                     inlineSuggest: { enabled: true },
                     suggest: {
-                        preview: false,
-                        showInlineDetails: false,
-                        insertMode: "replace",
+                        preview: true,
+                        showInlineDetails: true,
+                        insertMode: "insert",
                     },
                     quickSuggestions: {
                         other: true,

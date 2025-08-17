@@ -120,7 +120,7 @@ const templates: TemplateOption[] = [
     name: "Angular",
     description:
       "Angular is a web framework that empowers developers to build fast, reliable applications.",
-    icon: "/angular-2.svg",
+    icon: "/angular.svg",
     color: "#DD0031",
     popularity: 3,
     tags: ["React", "Fullstack", "JavaScript"],
